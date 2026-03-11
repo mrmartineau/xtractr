@@ -12,8 +12,14 @@
     "release-it": "^19.2.4"
   },
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
   },
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "name": "@mrmartineau/xtractr",
   "publishConfig": {
@@ -27,5 +33,6 @@
     "release": "release-it"
   },
   "type": "module",
+  "types": "./dist/index.d.ts",
   "version": "0.1.0"
 }

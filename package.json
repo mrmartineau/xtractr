@@ -1,0 +1,31 @@
+{
+  "dependencies": {
+    "defuddle": "^0.12.0",
+    "file-extension": "^4.0.5",
+    "linkedom": "^0.18.12",
+    "turndown": "^7.2.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.6",
+    "@mrmartineau/kit": "^0.1.0",
+    "@types/turndown": "^5.0.6",
+    "release-it": "^19.2.4"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "license": "MIT",
+  "name": "@mrmartineau/xtractr",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --clean",
+    "check": "biome check --write",
+    "dev": "tsup src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --watch",
+    "prepare": "tsup src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --clean",
+    "release": "release-it"
+  },
+  "type": "module",
+  "version": "0.0.0"
+}

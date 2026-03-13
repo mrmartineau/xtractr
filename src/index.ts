@@ -1,9 +1,9 @@
 import Defuddle from 'defuddle'
 import { parseHTML } from 'linkedom'
-import TurndownService from 'turndown'
 import { followShortUrl } from './follow-short-url'
 import { linkType } from './link-type'
 import './polyfill'
+import { createMarkdownContent } from './defuddle/markdown'
 import type { LinkType } from './type-checker'
 
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB
@@ -241,14 +241,10 @@ export async function xtract(targetUrl: string): Promise<XtractResponse> {
   }
 
   const finalUrl = response.url || resolvedShortUrl
-  const defuddle = new Defuddle(document, { url: finalUrl })
-  const result = defuddle.parse()
+  const defuddle = new Defuddle(document, { url: finalUrl, useAsync: true })
+  const result = await defuddle.parseAsync()
 
-  const turndown = new TurndownService({
-    codeBlockStyle: 'fenced',
-    headingStyle: 'atx',
-  })
-  const markdown = turndown.turndown(result.content || '')
+  const markdown = createMarkdownContent(result.content || '', finalUrl)
 
   const computedPageType = detectPageTypeFromDocument(
     document,

@@ -1,5 +1,5 @@
 import { Defuddle } from 'defuddle/node'
-import { parseHTML } from 'linkedom'
+import { parseHTML } from 'linkedom/worker'
 import { followShortUrl } from './follow-short-url'
 import { linkType } from './link-type'
 import './polyfill'

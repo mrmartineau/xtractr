@@ -2,7 +2,7 @@
 
 import { inspect } from 'node:util'
 
-import { xtract } from '../dist/index.mjs'
+import { xtract } from '../dist/index.js'
 
 const targetUrl = process.argv[2]
 

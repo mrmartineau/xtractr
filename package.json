@@ -15,12 +15,8 @@
   "exports": {
     ".": {
       "import": {
-        "default": "./dist/index.mjs",
-        "types": "./dist/index.d.mts"
-      },
-      "require": {
-        "default": "./dist/index.cjs",
-        "types": "./dist/index.d.cts"
+        "default": "./dist/index.js",
+        "types": "./dist/index.d.ts"
       }
     }
   },
@@ -33,14 +29,14 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --clean",
+    "build": "tsdown src/index.ts --platform neutral --format esm --target es2020 --dts --sourcemap --clean",
     "check": "biome check --write .",
-    "dev": "tsdown src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --watch",
-    "prepare": "tsdown src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --clean",
+    "dev": "tsdown src/index.ts --platform neutral --format esm --target es2020 --dts --sourcemap --watch",
+    "prepare": "bun run build",
     "release": "release-it",
     "test:local": "npm run build && node scripts/test-local.mjs"
   },
   "type": "module",
-  "types": "./dist/index.d.mts",
+  "types": "./dist/index.d.ts",
   "version": "0.2.3"
 }

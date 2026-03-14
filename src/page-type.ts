@@ -4,6 +4,12 @@ import { types } from './link-types'
 
 const MAX_JSON_LD_DEPTH = 10
 
+type DefuddleMetaTag = {
+  name?: string | null
+  property?: string | null
+  content?: string | null
+}
+
 const schemaTypeMap: Record<string, LinkType> = {
   article: 'article',
   audioobject: 'audio',
@@ -75,6 +81,16 @@ export const linkType = (link: string, isReaderable?: boolean): LinkType => {
   return type
 }
 
+function mapSchemaType(schemaType: string): LinkType | undefined {
+  const normalizedType = schemaType.toLowerCase().trim()
+  const schemaKey = normalizedType.split('/').pop()?.split(':').pop()
+  if (!schemaKey) {
+    return undefined
+  }
+
+  return schemaTypeMap[schemaKey]
+}
+
 function detectPageTypeFromJsonLd(
   value: unknown,
   depth = 0,
@@ -87,7 +103,7 @@ function detectPageTypeFromJsonLd(
 
   const atType = objectValue['@type']
   if (typeof atType === 'string') {
-    const mappedType = schemaTypeMap[atType.toLowerCase()]
+    const mappedType = mapSchemaType(atType)
     if (mappedType) {
       return mappedType
     }
@@ -97,7 +113,7 @@ function detectPageTypeFromJsonLd(
       if (typeof item !== 'string') {
         continue
       }
-      const mappedType = schemaTypeMap[item.toLowerCase()]
+      const mappedType = mapSchemaType(item)
       if (mappedType) {
         return mappedType
       }
@@ -124,17 +140,31 @@ function detectPageTypeFromJsonLd(
   return undefined
 }
 
-export function detectPageTypeFromDocument(
-  document: Document,
-  fallbackUrl: string,
-  isReaderable: boolean,
-): LinkType {
-  const ogTypeContent = document
-    .querySelector('meta[property="og:type"]')
-    ?.getAttribute('content')
-    ?.toLowerCase()
-    ?.trim()
+function findMetaTagContent(
+  metaTags: DefuddleMetaTag[] | undefined,
+  targetKey: string,
+): string | undefined {
+  const normalizedTargetKey = targetKey.toLowerCase()
 
+  for (const metaTag of metaTags || []) {
+    const metaKey = metaTag.property || metaTag.name
+    if (metaKey?.toLowerCase() !== normalizedTargetKey) {
+      continue
+    }
+
+    const content = metaTag.content?.trim()
+    if (content) {
+      return content
+    }
+  }
+
+  return undefined
+}
+
+function detectPageTypeFromMetaTags(
+  metaTags: DefuddleMetaTag[] | undefined,
+): LinkType | undefined {
+  const ogTypeContent = findMetaTagContent(metaTags, 'og:type')?.toLowerCase()
   if (ogTypeContent) {
     for (const ogTypeRule of ogTypeMap) {
       if (ogTypeContent.startsWith(ogTypeRule.startsWith)) {
@@ -143,24 +173,42 @@ export function detectPageTypeFromDocument(
     }
   }
 
-  const jsonLdScripts = Array.from(
-    document.querySelectorAll('script[type="application/ld+json"]'),
-  )
-  for (const script of jsonLdScripts) {
-    const text = script.textContent?.trim()
-    if (!text) {
+  for (const metaTag of metaTags || []) {
+    const metaKey = (metaTag.property || metaTag.name)?.toLowerCase()
+    if (!metaKey) {
       continue
     }
 
-    try {
-      const parsed = JSON.parse(text) as unknown
-      const detectedType = detectPageTypeFromJsonLd(parsed)
-      if (detectedType) {
-        return detectedType
-      }
-    } catch {
-      // ignore malformed JSON-LD blocks
+    if (metaKey === 'twitter:card' && metaTag.content?.toLowerCase() === 'player') {
+      return 'video'
     }
+
+    if (metaKey.startsWith('og:video') || metaKey === 'twitter:player') {
+      return 'video'
+    }
+
+    if (metaKey.startsWith('og:audio')) {
+      return 'audio'
+    }
+  }
+
+  return undefined
+}
+
+export function detectPageType(
+  fallbackUrl: string,
+  isReaderable: boolean,
+  schemaOrgData?: unknown,
+  metaTags?: DefuddleMetaTag[],
+): LinkType {
+  const metaTagType = detectPageTypeFromMetaTags(metaTags)
+  if (metaTagType) {
+    return metaTagType
+  }
+
+  const schemaOrgType = detectPageTypeFromJsonLd(schemaOrgData)
+  if (schemaOrgType) {
+    return schemaOrgType
   }
 
   return linkType(fallbackUrl, isReaderable)

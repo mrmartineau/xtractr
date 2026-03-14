@@ -5,6 +5,14 @@ export type DefuddleCompatDocument = Document & {
   defaultView?: (Window & typeof globalThis) | null
 }
 
+export interface DefuddleMetaTag {
+  name?: string | null
+  property?: string | null
+  content?: string | null
+}
+
+export type DefuddleSchemaOrgItem = Record<string, unknown>
+
 export interface XtractResponse {
   title: string
   author: string

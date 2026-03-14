@@ -1,8 +1,8 @@
 import { Defuddle } from 'defuddle/node'
-import { parseHTML } from 'linkedom/worker'
+// import { parseHTML } from 'linkedom/worker'
 import { MAX_SIZE, readResponseWithLimit } from './fetch'
 import { followShortUrl } from './follow-short-url'
-import { detectPageTypeFromDocument } from './page-type'
+import { detectPageType } from './page-type'
 import type { DefuddleCompatDocument, XtractResponse } from './xtract-response'
 
 export async function xtract(targetUrl: string): Promise<XtractResponse> {
@@ -40,21 +40,21 @@ export async function xtract(targetUrl: string): Promise<XtractResponse> {
 
   const html = await readResponseWithLimit(response)
 
-  const parsedWindow = parseHTML(html)
-  const document = parsedWindow.document as unknown as Document
+  // const parsedWindow = parseHTML(html)
+  // const document = parsedWindow.document as unknown as Document
 
-  const doc = document as DefuddleCompatDocument
-  if (!doc.styleSheets) {
-    Object.defineProperty(doc, 'styleSheets', {
-      configurable: true,
-      value: [],
-      writable: true,
-    })
-  }
-  if (doc.defaultView && !doc.defaultView.getComputedStyle) {
-    doc.defaultView.getComputedStyle = () =>
-      ({ display: '' }) as CSSStyleDeclaration
-  }
+  // const doc = document as DefuddleCompatDocument
+  // if (!doc.styleSheets) {
+  //   Object.defineProperty(doc, 'styleSheets', {
+  //     configurable: true,
+  //     value: [],
+  //     writable: true,
+  //   })
+  // }
+  // if (doc.defaultView && !doc.defaultView.getComputedStyle) {
+  //   doc.defaultView.getComputedStyle = () =>
+  //     ({ display: '' }) as CSSStyleDeclaration
+  // }
 
   const finalUrl = response.url || resolvedShortUrl
   const result = await Defuddle(html, finalUrl, {
@@ -62,10 +62,11 @@ export async function xtract(targetUrl: string): Promise<XtractResponse> {
     useAsync: true,
   })
 
-  const computedPageType = detectPageTypeFromDocument(
-    document,
+  const computedPageType = detectPageType(
     finalUrl,
     Boolean(result?.author),
+    result?.schemaOrgData,
+    result?.metaTags,
   )
 
   return {

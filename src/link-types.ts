@@ -1,4 +1,19 @@
-import type { TypeDictionary } from './type-checker'
+export type LinkType =
+  | 'link'
+  | 'video'
+  | 'audio'
+  | 'recipe'
+  | 'image'
+  | 'document'
+  | 'article'
+  | 'game'
+  | 'book'
+  | 'event'
+  | 'product'
+  | 'note'
+  | 'file'
+
+export type TypeDictionary = Record<string, LinkType>
 
 export const fileTypes: TypeDictionary = {
   aac: 'audio',
@@ -123,7 +138,7 @@ export const siteTypes: TypeDictionary = {
   'zenodo.org': 'document',
 }
 
-export const types = {
+export const types: TypeDictionary = {
   ...fileTypes,
   ...siteTypes,
 }

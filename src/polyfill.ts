@@ -1,4 +1,4 @@
-import { DOMParser, parseHTML } from 'linkedom'
+import { DOMParser, parseHTML } from 'linkedom/worker'
 
 // Turndown checks for browser globals at module-load time.
 // Ensure they are initialized as soon as this module is loaded.

@@ -29,9 +29,9 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown src/index.ts --platform neutral --format esm --target es2020 --dts --sourcemap --clean",
+    "build": "tsdown src/index.ts --platform browser --treeshake --shims --format esm --target es2020 --dts --sourcemap --clean",
     "check": "biome check --write .",
-    "dev": "tsdown src/index.ts --platform neutral --format esm --target es2020 --dts --sourcemap --watch",
+    "dev": "tsdown src/index.ts --platform browser --treeshake --shims --format esm --target es2020 --dts --sourcemap --watch",
     "prepare": "bun run build",
     "release": "release-it",
     "test:local": "npm run build && node scripts/test-local.mjs"

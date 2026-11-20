@@ -6,9 +6,10 @@
     "turndown": "^7.2.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.7",
-    "@mrmartineau/kit": "^0.1.0",
+    "@mrmartineau/kit": "^1.1.0",
     "@types/turndown": "^5.0.6",
+    "oxfmt": "^0.79.0",
+    "oxlint": "^1.94.0",
     "release-it": "^19.2.4",
     "tsdown": "^0.21.2"
   },
@@ -30,7 +31,7 @@
   },
   "scripts": {
     "build": "tsdown src/index.ts --platform browser --treeshake --shims --format esm --target es2020 --dts --sourcemap --clean",
-    "check": "biome check --write .",
+    "check": "oxlint --fix && oxfmt",
     "dev": "tsdown src/index.ts --platform browser --treeshake --shims --format esm --target es2020 --dts --sourcemap --watch",
     "prepare": "bun run build",
     "release": "release-it",

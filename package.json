@@ -1,4 +1,31 @@
 {
+  "name": "@mrmartineau/xtractr",
+  "version": "0.2.7",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./dist/index.js",
+        "types": "./dist/index.d.ts"
+      }
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown src/index.ts --platform browser --treeshake --shims --format esm --target es2020 --dts --sourcemap --clean",
+    "check": "oxlint --fix && oxfmt",
+    "dev": "tsdown src/index.ts --platform browser --treeshake --shims --format esm --target es2020 --dts --sourcemap --watch",
+    "prepare": "bun run build",
+    "release": "release-it",
+    "test:local": "npm run build && node scripts/test-local.mjs"
+  },
   "dependencies": {
     "defuddle": "^0.13.0",
     "file-extension": "^4.0.5",
@@ -12,32 +39,5 @@
     "oxlint": "^1.94.0",
     "release-it": "^19.2.4",
     "tsdown": "^0.21.2"
-  },
-  "exports": {
-    ".": {
-      "import": {
-        "default": "./dist/index.js",
-        "types": "./dist/index.d.ts"
-      }
-    }
-  },
-  "files": [
-    "dist"
-  ],
-  "license": "MIT",
-  "name": "@mrmartineau/xtractr",
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "build": "tsdown src/index.ts --platform browser --treeshake --shims --format esm --target es2020 --dts --sourcemap --clean",
-    "check": "oxlint --fix && oxfmt",
-    "dev": "tsdown src/index.ts --platform browser --treeshake --shims --format esm --target es2020 --dts --sourcemap --watch",
-    "prepare": "bun run build",
-    "release": "release-it",
-    "test:local": "npm run build && node scripts/test-local.mjs"
-  },
-  "type": "module",
-  "types": "./dist/index.d.ts",
-  "version": "0.2.7"
+  }
 }

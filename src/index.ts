@@ -18,16 +18,11 @@ export async function xtract(targetUrl: string): Promise<XtractResponse> {
   })
 
   if (!response.ok) {
-    throw new Error(
-      `Failed to fetch: ${response.status} ${response.statusText}`,
-    )
+    throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`)
   }
 
   const contentType = response.headers.get('content-type') || ''
-  if (
-    !contentType.includes('text/html') &&
-    !contentType.includes('application/xhtml+xml')
-  ) {
+  if (!contentType.includes('text/html') && !contentType.includes('application/xhtml+xml')) {
     throw new Error(`Not an HTML page (content-type: ${contentType})`)
   }
 

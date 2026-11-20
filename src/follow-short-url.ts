@@ -6,9 +6,7 @@ export interface FollowShortUrlResponse {
   unshortened_url: string
 }
 
-async function requestRedirectLocation(
-  currentUrl: string,
-): Promise<string | null> {
+async function requestRedirectLocation(currentUrl: string): Promise<string | null> {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), HEAD_TIMEOUT_MS)
 
@@ -27,10 +25,7 @@ async function requestRedirectLocation(
     return headResponse.headers.get('location')
   } catch {
     const getController = new AbortController()
-    const getTimeoutId = setTimeout(
-      () => getController.abort(),
-      HEAD_TIMEOUT_MS,
-    )
+    const getTimeoutId = setTimeout(() => getController.abort(), HEAD_TIMEOUT_MS)
     try {
       const getResponse = await fetch(currentUrl, {
         method: 'GET',
